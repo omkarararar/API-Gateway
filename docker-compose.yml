@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET:-fallback_secret_for_local_dev_only_12345}
+    depends_on:
+      - redis
+    volumes:
+      - ./src:/usr/src/app/src
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    command: redis-server --save "" --appendonly no
