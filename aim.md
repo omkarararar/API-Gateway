@@ -12,15 +12,15 @@ so individual services don't have to.
 
 | Feature | Status |
 |---|---|
-| JWT authentication | ✅ Done |
-| In-memory rate limiter | ✅ Done |
-| HTTP proxy + routing | ✅ Done |
-| Request logger | ✅ Done |
-| Error handler | ✅ Done |
-| Config validation (Zod) | ✅ Done |
-| Structured logging (pino) | ✅ Done |
-| Redis client singleton | ✅ Done |
-| Circuit breaker (opossum) | 🔄 In progress |
+| JWT authentication | Done |
+| In-memory rate limiter | Done |
+| HTTP proxy + routing | Done |
+| Request logger | Done |
+| Error handler | Done |
+| Config validation (Zod) | Done |
+| Structured logging (pino) | Done |
+| Redis client singleton | Done |
+| Circuit breaker (opossum) | Done |
 
 ---
 
