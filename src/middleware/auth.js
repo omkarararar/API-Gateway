@@ -19,7 +19,7 @@ const authenticateJWT = (req, res, next) => {
     // Inject custom headers for upstream proxy payload propagation
     req.headers['x-user-id'] = decoded.sub;
     if (decoded.roles && Array.isArray(decoded.roles)) {
-      req.headers['x-user-role'] = decoded.roles.join(',');
+      req.headers['x-user-roles'] = decoded.roles.join(',');
     }
 
     next();

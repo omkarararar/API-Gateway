@@ -37,7 +37,7 @@ routes.forEach((route) => {
     pathRewrite: (path, req) => path.replace(route.path, ''), // Strip the prefix
     onProxyReq: (proxyReq, req, res) => {
       // Inject headers
-      proxyReq.setHeader('x-request-id', req.id);
+      proxyReq.setHeader('x-request-id', req.id || 'fallback-id');
       if (req.user) {
         proxyReq.setHeader('x-user-id', req.user.sub);
         if (req.user.roles) {

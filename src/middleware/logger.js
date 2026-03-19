@@ -30,7 +30,8 @@ const requestLogger = (req, res, next) => {
   // Generate or propagate correlation ID
   const correlationId = req.headers['x-request-id'] || crypto.randomUUID();
   req.id = correlationId;
-  res.setHeader('X-Request-Id', correlationId);
+  req.headers['x-request-id'] = correlationId;
+  res.setHeader('x-request-id', correlationId);
 
   const start = Date.now();
 

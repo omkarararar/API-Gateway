@@ -59,4 +59,8 @@ const startServer = () => {
   process.on('SIGINT', () => shutdown('SIGINT'));
 };
 
-startServer();
+if (process.env.NODE_ENV !== 'test') {
+  startServer();
+}
+
+module.exports = app;
