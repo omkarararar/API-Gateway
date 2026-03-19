@@ -14,7 +14,7 @@ const createMockServer = (port, name) => {
   });
 
   app.listen(port, () => {
-    console.log(`✅ Mock ${name} listening on port ${port}`);
+    console.log(`Mock ${name} listening on port ${port}`);
   });
 };
 

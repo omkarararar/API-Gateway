@@ -37,7 +37,7 @@ app.use(errorHandler);
 
 const startServer = () => {
   const server = app.listen(env.PORT, () => {
-    logger.info(`🚀 API Gateway started on port ${env.PORT} in ${env.NODE_ENV} mode`);
+    logger.info(`API Gateway started on port ${env.PORT} in ${env.NODE_ENV} mode`);
   });
 
   // Graceful shutdown
