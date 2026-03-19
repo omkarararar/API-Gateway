@@ -20,4 +20,15 @@ describe('Global Error Handler Middleware', () => {
     expect(res.body.error).not.toHaveProperty('stack');
     expect(res.headers['content-type']).toMatch(/json/);
   });
+
+  it('should return 413 for oversized JSON payloads', async () => {
+    // Generate a payload over 10kb
+    const largePayload = { data: 'x'.repeat(20000) };
+    const res = await request(app)
+      .post('/api/public')
+      .set('Content-Type', 'application/json')
+      .send(JSON.stringify(largePayload));
+    
+    expect(res.status).toBe(413);
+  });
 });

@@ -58,4 +58,10 @@ describe('Circuit Breaker Middleware (Opossum)', () => {
     expect(res.status).toBe(503);
     expect(res.body.error).toMatch(/Circuit Open/i);
   });
+
+  it('should have a timeout of 5000ms configured in the circuit breaker', () => {
+    const { getCircuitBreaker } = require('../src/services/breaker');
+    const breaker = getCircuitBreaker('http://localhost:4000', jest.fn());
+    expect(breaker.options.timeout).toBe(5000);
+  });
 });

@@ -4,13 +4,16 @@ const cors = require('cors');
 const env = require('./config/env');
 const { logger, requestLogger } = require('./middleware/logger');
 const { errorHandler } = require('./middleware/errorHandler');
+const { metricsMiddleware } = require('./middleware/metricsMiddleware');
+const redisClient = require('./config/redis');
 
 // Import routes
 const gatewayRouter = require('./routes/gateway');
+const metricsRouter = require('./routes/metrics');
 
 const app = express();
 
-// Security middlewares
+// Security middlewares — helmet MUST be first
 app.use(helmet());
 app.use(cors());
 
@@ -20,6 +23,7 @@ app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
 // Observability middlewares
 app.use(requestLogger);
+app.use(metricsMiddleware);
 
 // Health check endpoint
 app.get('/health', (req, res) => {
@@ -28,6 +32,11 @@ app.get('/health', (req, res) => {
     time: new Date().toISOString()
   });
 });
+
+// Prometheus metrics endpoint — only if enabled
+if (env.METRICS_ENABLED === 'true') {
+  app.use('/', metricsRouter);
+}
 
 // Use routes
 app.use('/', gatewayRouter);
@@ -43,20 +52,32 @@ const startServer = () => {
   // Graceful shutdown
   const shutdown = (signal) => {
     logger.info({ signal }, 'Received shutdown signal, shutting down gracefully');
+
     server.close(() => {
-      logger.info('HTTP server closed');
-      process.exit(0);
+      logger.info('HTTP server closed, no longer accepting connections');
+
+      redisClient.quit()
+        .then(() => {
+          logger.info('Redis connection closed');
+          process.exit(0);
+        })
+        .catch((err) => {
+          logger.error({ err: err.message }, 'Error closing Redis connection');
+          process.exit(1);
+        });
     });
 
-    // Force shutdown after 10s
+    // Force shutdown after 10s if graceful shutdown hangs
     setTimeout(() => {
       logger.error('Could not close connections in time, forcefully shutting down');
       process.exit(1);
-    }, 10000);
+    }, 10000).unref();
   };
 
   process.on('SIGTERM', () => shutdown('SIGTERM'));
   process.on('SIGINT', () => shutdown('SIGINT'));
+
+  return server;
 };
 
 if (process.env.NODE_ENV !== 'test') {
@@ -64,3 +85,4 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 module.exports = app;
+module.exports.startServer = startServer;

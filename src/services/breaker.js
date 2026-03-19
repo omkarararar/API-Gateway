@@ -10,7 +10,7 @@ const getCircuitBreaker = (targetUrl, proxyActionPromise) => {
   }
 
   const options = {
-    timeout: 3000,                // If proxy takes longer than 3s, consider it failed
+    timeout: 5000,                // If proxy takes longer than 5s, consider it failed
     errorThresholdPercentage: 50, // When 50% of requests fail, trip the circuit
     volumeThreshold: 3,           // Minimum requests to trip circuit quickly
     resetTimeout: 10000           // Wait 10s before trying to recover the upstream

@@ -2,7 +2,7 @@ const { RateLimiterRedis } = require('rate-limiter-flexible');
 const redisClient = require('../config/redis');
 const { logger } = require('./logger');
 
-// Define the public limiter: 100 requests per 15 minutes
+// Define the public limiter: 100 requests per 15 minutes per IP
 const publicLimiterConfig = new RateLimiterRedis({
   storeClient: redisClient,
   keyPrefix: 'rate_public',
@@ -10,7 +10,7 @@ const publicLimiterConfig = new RateLimiterRedis({
   duration: 15 * 60, // 15 minutes
 });
 
-// Define the auth limiter: 10 requests per 15 minutes (stricter against credential stuffing)
+// Define the auth limiter: 10 requests per 15 minutes per IP (stricter against credential stuffing)
 const authLimiterConfig = new RateLimiterRedis({
   storeClient: redisClient,
   keyPrefix: 'rate_auth',
@@ -18,9 +18,18 @@ const authLimiterConfig = new RateLimiterRedis({
   duration: 15 * 60, // 15 minutes
 });
 
-const createRateLimiterMiddleware = (rateLimiter) => {
+// Define the user-keyed limiter: 50 requests per 15 minutes per authenticated user
+const userLimiterConfig = new RateLimiterRedis({
+  storeClient: redisClient,
+  keyPrefix: 'rate_user',
+  points: 50,
+  duration: 15 * 60, // 15 minutes
+});
+
+const createRateLimiterMiddleware = (rateLimiter, keyExtractor) => {
   return (req, res, next) => {
-    rateLimiter.consume(req.ip)
+    const key = keyExtractor ? keyExtractor(req) : req.ip;
+    rateLimiter.consume(key)
       .then((rateLimiterRes) => {
         // Valid request, inside the limits
         res.setHeader('X-RateLimit-Limit', rateLimiter.points);
@@ -53,5 +62,6 @@ const createRateLimiterMiddleware = (rateLimiter) => {
 
 const publicRateLimiter = createRateLimiterMiddleware(publicLimiterConfig);
 const authRateLimiter = createRateLimiterMiddleware(authLimiterConfig);
+const userRateLimiter = createRateLimiterMiddleware(userLimiterConfig, (req) => req.user?.sub || req.ip);
 
-module.exports = { publicRateLimiter, authRateLimiter };
+module.exports = { publicRateLimiter, authRateLimiter, userRateLimiter };

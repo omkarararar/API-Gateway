@@ -120,4 +120,39 @@ describe('Redis Rate Limiting Middleware', () => {
     expect(res.status).toBe(200);
     expect(res.headers['x-ratelimit-limit']).toBe('10'); // Ensures the auth limit configuration is effectively smaller limit
   });
+
+  it('should use user-keyed rate limiting for authenticated routes (/api/products)', async () => {
+    const jwt = require('jsonwebtoken');
+    const token = jwt.sign(
+      { sub: 'user_keyed_test', roles: ['user'] },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    // Mock the consume to succeed — the user-keyed limiter uses req.user.sub as the key
+    mockConsume.mockResolvedValue({
+      remainingPoints: 49,
+      msBeforeNext: 2500,
+      consumedPoints: 1,
+      isFirstInDuration: true,
+    });
+
+    let mockServerProducts;
+    const productsApp = express();
+    productsApp.use((req, res) => res.status(200).json({ success: true }));
+    
+    await new Promise((resolve) => {
+      mockServerProducts = productsApp.listen(4002, resolve);
+    });
+
+    const res = await request(app)
+      .get('/api/products/item')
+      .set('Authorization', `Bearer ${token}`);
+    
+    expect(res.status).toBe(200);
+    // The user-keyed limiter has 50 points
+    expect(res.headers['x-ratelimit-limit']).toBe('50');
+
+    await new Promise((resolve) => mockServerProducts.close(resolve));
+  });
 });

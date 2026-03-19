@@ -1,9 +1,10 @@
 const express = require('express');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const { authenticateJWT, requireRole } = require('../middleware/auth');
-const { publicRateLimiter, authRateLimiter } = require('../middleware/rateLimiter');
+const { publicRateLimiter, authRateLimiter, userRateLimiter } = require('../middleware/rateLimiter');
 const { logger } = require('../middleware/logger');
 const { getCircuitBreaker } = require('../services/breaker');
+const { circuitBreakerState, circuitBreakerTripsTotal } = require('../config/metrics');
 
 const router = express.Router();
 
@@ -22,12 +23,12 @@ const routes = [
   {
     path: '/api/products',
     target: 'http://localhost:4002',
-    middlewares: [authenticateJWT],
+    middlewares: [authenticateJWT, userRateLimiter],
   },
   {
     path: '/api/admin',
     target: 'http://localhost:4003',
-    middlewares: [authenticateJWT, requireRole('admin')],
+    middlewares: [authenticateJWT, requireRole('admin'), userRateLimiter],
   }
 ];
 
@@ -75,9 +76,23 @@ routes.forEach((route) => {
 
   const breaker = getCircuitBreaker(route.target, proxyActionPromise);
 
+  // Emit Prometheus metrics on circuit breaker state changes
+  breaker.on('open', () => {
+    circuitBreakerState.set({ target: route.target }, 1);
+    circuitBreakerTripsTotal.inc({ target: route.target });
+  });
+  breaker.on('halfOpen', () => {
+    circuitBreakerState.set({ target: route.target }, 0.5);
+  });
+  breaker.on('close', () => {
+    circuitBreakerState.set({ target: route.target }, 0);
+  });
+
   const applyBreaker = (req, res, next) => {
     breaker.fire(req, res, next).catch((err) => {
-      next(err); // Last resort catch if fallback fails
+      if (!res.headersSent) {
+        next(err);
+      }
     });
   };
 
