@@ -1,0 +1,12 @@
+# Dependencies
+node_modules/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Test and coverage results
+coverage/
+jest-results.json
+jest-output.txt
