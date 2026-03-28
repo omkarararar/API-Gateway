@@ -1,22 +1,22 @@
 [
   {
     "path": "/api/public",
-    "target": "http://localhost:4000",
+    "target": "https://jsonplaceholder.typicode.com",
     "middlewares": ["publicRateLimiter"]
   },
   {
     "path": "/api/auth",
-    "target": "http://localhost:4001",
+    "target": "https://jsonplaceholder.typicode.com",
     "middlewares": ["authRateLimiter"]
   },
   {
     "path": "/api/products",
-    "target": "http://localhost:4002",
+    "target": "https://jsonplaceholder.typicode.com",
     "middlewares": ["authenticateJWT", "userRateLimiter"]
   },
   {
     "path": "/api/admin",
-    "target": "http://localhost:4003",
+    "target": "https://jsonplaceholder.typicode.com",
     "middlewares": ["authenticateJWT", "requireRole:admin", "userRateLimiter"]
   }
 ]
