@@ -260,9 +260,11 @@ npm run test:coverage
 
 ---
 
-## 📡 API Endpoints
+## 📡 API Endpoints & Routes Config
 
-| Endpoint | Auth | Rate Limit | Description |
+By default, the Gateway includes these routes, but **you can override them entirely using a `routes.json` file**.
+
+| Default Endpoint | Auth | Rate Limit | Description |
 |---|---|---|---|
 | `GET /health` | None | None | Liveness probe — returns `{ status: "ok" }` |
 | `GET /metrics` | None | None | Prometheus-compatible metrics scrape |
@@ -270,6 +272,26 @@ npm run test:coverage
 | `/api/auth/*` | None | 10 req / 15 min (IP) | Auth routes proxied to `:4001` |
 | `/api/products/*` | JWT | 50 req / 15 min (user) | Protected routes proxied to `:4002` |
 | `/api/admin/*` | JWT + `admin` role | 50 req / 15 min (user) | Admin-only routes proxied to `:4003` |
+
+### Using `routes.json` for Your Own Project
+If you want to use this API Gateway for your own microservices without changing the code, simply create a `routes.json` file in the root directory (or set `ROUTES_FILE` in `.env`). The gateway will automatically parse it and set up the proxies and middleware!
+
+**Example `routes.json`:**
+```json
+[
+  {
+    "path": "/api/users",
+    "target": "https://users-microservice.example.com",
+    "middlewares": ["publicRateLimiter"]
+  },
+  {
+    "path": "/api/payments",
+    "target": "https://payments-microservice.example.com",
+    "middlewares": ["authenticateJWT", "requireRole:admin", "userRateLimiter"]
+  }
+]
+```
+Available dynamic middlewares: `publicRateLimiter`, `authRateLimiter`, `userRateLimiter`, `authenticateJWT`, `requireRole:<role>`.
 
 ---
 

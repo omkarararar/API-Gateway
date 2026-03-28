@@ -1,4 +1,7 @@
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
+const env = require('../config/env');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const { authenticateJWT, requireRole } = require('../middleware/auth');
 const { publicRateLimiter, authRateLimiter, userRateLimiter } = require('../middleware/rateLimiter');
@@ -8,29 +11,63 @@ const { circuitBreakerState, circuitBreakerTripsTotal } = require('../config/met
 
 const router = express.Router();
 
+const middlewareMap = {
+  'publicRateLimiter': publicRateLimiter,
+  'authRateLimiter': authRateLimiter,
+  'userRateLimiter': userRateLimiter,
+  'authenticateJWT': authenticateJWT,
+};
+
 // Define routes configuration
-const routes = [
-  {
-    path: '/api/public',
-    target: 'http://localhost:4000', // Mock upstream
-    middlewares: [publicRateLimiter],
-  },
-  {
-    path: '/api/auth',
-    target: 'http://localhost:4001',
-    middlewares: [authRateLimiter], 
-  },
-  {
-    path: '/api/products',
-    target: 'http://localhost:4002',
-    middlewares: [authenticateJWT, userRateLimiter],
-  },
-  {
-    path: '/api/admin',
-    target: 'http://localhost:4003',
-    middlewares: [authenticateJWT, requireRole('admin'), userRateLimiter],
+let routes = [];
+const routesPath = path.resolve(process.cwd(), env.ROUTES_FILE);
+
+if (fs.existsSync(routesPath)) {
+  try {
+    const defaultRoutes = JSON.parse(fs.readFileSync(routesPath, 'utf8'));
+    routes = defaultRoutes.map(route => {
+      const mw = (route.middlewares || []).map(m => {
+        if (m.startsWith('requireRole:')) {
+          const role = m.split(':')[1];
+          return requireRole(role);
+        }
+        if (middlewareMap[m]) {
+          return middlewareMap[m];
+        }
+        throw new Error(`Unknown middleware: ${m}`);
+      });
+      return { ...route, middlewares: mw };
+    });
+    logger.info(`Loaded ${routes.length} routes from ${env.ROUTES_FILE}`);
+  } catch (error) {
+    logger.error({ err: error }, `Failed to parse ${env.ROUTES_FILE}`);
+    process.exit(1);
   }
-];
+} else {
+  logger.info(`Routes file ${env.ROUTES_FILE} not found. Using default internal routes.`);
+  routes = [
+    {
+      path: '/api/public',
+      target: 'http://localhost:4000', // Mock upstream
+      middlewares: [publicRateLimiter],
+    },
+    {
+      path: '/api/auth',
+      target: 'http://localhost:4001',
+      middlewares: [authRateLimiter], 
+    },
+    {
+      path: '/api/products',
+      target: 'http://localhost:4002',
+      middlewares: [authenticateJWT, userRateLimiter],
+    },
+    {
+      path: '/api/admin',
+      target: 'http://localhost:4003',
+      middlewares: [authenticateJWT, requireRole('admin'), userRateLimiter],
+    }
+  ];
+}
 
 // Setup routes with proxy
 routes.forEach((route) => {

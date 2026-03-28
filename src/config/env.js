@@ -10,6 +10,7 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(16),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
   METRICS_ENABLED: z.enum(['true', 'false']).default('false'),
+  ROUTES_FILE: z.string().default('routes.json'),
 });
 
 const parsed = envSchema.safeParse(process.env);

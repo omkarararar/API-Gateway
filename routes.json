@@ -1,0 +1,22 @@
+[
+  {
+    "path": "/api/public",
+    "target": "http://localhost:4000",
+    "middlewares": ["publicRateLimiter"]
+  },
+  {
+    "path": "/api/auth",
+    "target": "http://localhost:4001",
+    "middlewares": ["authRateLimiter"]
+  },
+  {
+    "path": "/api/products",
+    "target": "http://localhost:4002",
+    "middlewares": ["authenticateJWT", "userRateLimiter"]
+  },
+  {
+    "path": "/api/admin",
+    "target": "http://localhost:4003",
+    "middlewares": ["authenticateJWT", "requireRole:admin", "userRateLimiter"]
+  }
+]
