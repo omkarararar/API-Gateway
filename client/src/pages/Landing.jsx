@@ -16,27 +16,27 @@ export default function Landing() {
   }, []);
 
   return (
-    <div className="landing fade-in">
+    <div className="landing fade-in" style={{ position: 'relative' }}>
+      <LightRays
+        raysOrigin="top-center"
+        raysColor="#ffffff"
+        raysSpeed={1.3}
+        lightSpread={2.0}
+        rayLength={20}
+        followMouse={true}
+        mouseInfluence={0.1}
+        noiseAmount={0}
+        distortion={0}
+        className="custom-rays"
+        pulsating={false}
+        fadeDistance={1}
+        saturation={1}
+      />
       <CurvedLoop
         marqueeText="One gateway to secure, scale, and observe every API. ✦ "
         interactive={false}
       />
-      <section className="hero" style={{ position: 'relative', overflow: 'hidden' }}>
-        <LightRays
-          raysOrigin="top-center"
-          raysColor="#ffffff"
-          raysSpeed={1.3}
-          lightSpread={1.7}
-          rayLength={3}
-          followMouse={true}
-          mouseInfluence={0.1}
-          noiseAmount={0}
-          distortion={0}
-          className="custom-rays"
-          pulsating={false}
-          fadeDistance={1}
-          saturation={1}
-        />
+      <section className="hero" style={{ position: 'relative' }}>
         <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <div className="hero-badge">
             <span className={`health-dot ${health ? 'live' : ''}`} />
