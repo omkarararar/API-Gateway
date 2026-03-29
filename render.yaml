@@ -2,13 +2,15 @@ services:
   - type: web
     name: api-gateway
     env: node
-    buildCommand: npm install
-    startCommand: node src/index.js # Make sure package.json has a start script or use node directly
+    buildCommand: npm install && cd client && npm install && npm run build
+    startCommand: node src/index.js
     envVars:
       - key: NODE_ENV
         value: production
+      - key: METRICS_ENABLED
+        value: 'true'
       - key: JWT_SECRET
-        generateValue: true # Render will generate a strong secret automatically
+        generateValue: true
       - key: REDIS_URL
         fromService:
           type: redis
@@ -17,4 +19,4 @@ services:
 
   - type: redis
     name: api-gateway-redis
-    ipAllowList: [] # Keep redis completely internal to Render
+    ipAllowList: []

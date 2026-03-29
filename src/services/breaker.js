@@ -41,4 +41,4 @@ const getCircuitBreaker = (targetUrl, proxyActionPromise) => {
   return breaker;
 };
 
-module.exports = { getCircuitBreaker };
+module.exports = { getCircuitBreaker, breakers };

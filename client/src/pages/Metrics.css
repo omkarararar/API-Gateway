@@ -1,0 +1,152 @@
+.metrics-page {
+  padding: 48px 0;
+  padding-bottom: 80px;
+}
+
+.metrics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+}
+.metrics-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.metrics-header code {
+  color: var(--accent);
+  font-size: 13px;
+}
+
+.session-info {
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+
+.session-info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+.session-info-grid .info-label {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+.session-info-grid code {
+  font-size: 12px;
+  color: var(--accent);
+  word-break: break-all;
+}
+
+.mw-tags {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+
+.stat-unit {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-secondary);
+  margin-left: 2px;
+}
+
+.breakers-section {
+  margin-bottom: 32px;
+}
+
+.breakers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+}
+
+.breaker-card {
+  padding: 20px;
+}
+
+.breaker-header {
+  margin-bottom: 10px;
+}
+
+.breaker-target {
+  font-size: 12px;
+  color: var(--text-secondary);
+  display: block;
+  margin-bottom: 14px;
+  word-break: break-all;
+}
+
+.breaker-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.breaker-stats > div {
+  text-align: center;
+}
+.breaker-stats .stat-label {
+  display: block;
+  font-size: 10px;
+  margin-bottom: 2px;
+}
+.breaker-stats span:not(.stat-label) {
+  font-size: 18px;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.raw-section {
+  margin-bottom: 32px;
+}
+
+.section-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.raw-metrics {
+  padding: 20px;
+  font-size: 11px;
+  line-height: 1.6;
+  max-height: 400px;
+  overflow: auto;
+  color: var(--text-secondary);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.no-session {
+  padding: 48px;
+  text-align: center;
+}
+.no-session h2 {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+.no-session .btn {
+  margin-top: 16px;
+}
+
+@media (max-width: 768px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .breaker-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

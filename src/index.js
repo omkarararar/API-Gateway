@@ -1,48 +1,88 @@
 const express = require('express');
+const path = require('path');
+const fs = require('fs');
 const helmet = require('helmet');
 const cors = require('cors');
 const env = require('./config/env');
 const { logger, requestLogger } = require('./middleware/logger');
 const { errorHandler } = require('./middleware/errorHandler');
 const { metricsMiddleware } = require('./middleware/metricsMiddleware');
+const requestCapture = require('./middleware/requestCapture');
 const redisClient = require('./config/redis');
 
 // Import routes
 const gatewayRouter = require('./routes/gateway');
 const metricsRouter = require('./routes/metrics');
+const adminRouter = require('./routes/admin');
+const sessionProxyRouter = require('./routes/sessionProxy');
 
 const app = express();
 
-// Security middlewares — helmet MUST be first
-app.use(helmet());
+// Security — relaxed CSP for dashboard
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+        connectSrc: ["'self'"],
+        imgSrc: ["'self'", 'data:'],
+      },
+    },
+  })
+);
 app.use(cors());
 
-// Limit payload size to prevent DOS
+// Limit payload size
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
-// Observability middlewares
+// Observability
 app.use(requestLogger);
 app.use(metricsMiddleware);
+if (process.env.NODE_ENV !== 'test') {
+  app.use(requestCapture.middleware());
+}
 
-// Health check endpoint
+// Serve React dashboard (static build)
+const clientDist = path.join(__dirname, '..', 'client', 'dist');
+if (fs.existsSync(clientDist)) {
+  app.use(express.static(clientDist));
+}
+
+// Health check
 app.get('/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'ok', 
-    time: new Date().toISOString()
+  res.status(200).json({
+    status: 'ok',
+    time: new Date().toISOString(),
   });
 });
 
-// Prometheus metrics endpoint — only if enabled
+// Prometheus metrics endpoint
 if (env.METRICS_ENABLED === 'true') {
   app.use('/', metricsRouter);
 }
 
-// Use routes
+// Dashboard admin API
+app.use('/api/gateway', adminRouter);
+
+// Session-based dynamic proxy
+app.use('/', sessionProxyRouter);
+
+// Static gateway routes (from routes.json)
 app.use('/', gatewayRouter);
 
 // Global Error Handler
 app.use(errorHandler);
+
+// SPA fallback — serve React index.html for unmatched GET routes
+if (fs.existsSync(clientDist) && process.env.NODE_ENV !== 'test') {
+  app.get('/{*splat}', (req, res) => {
+    res.sendFile(path.join(clientDist, 'index.html'));
+  });
+}
 
 const startServer = () => {
   const server = app.listen(env.PORT, () => {
@@ -56,7 +96,8 @@ const startServer = () => {
     server.close(() => {
       logger.info('HTTP server closed, no longer accepting connections');
 
-      redisClient.quit()
+      redisClient
+        .quit()
         .then(() => {
           logger.info('Redis connection closed');
           process.exit(0);
@@ -67,7 +108,6 @@ const startServer = () => {
         });
     });
 
-    // Force shutdown after 10s if graceful shutdown hangs
     setTimeout(() => {
       logger.error('Could not close connections in time, forcefully shutting down');
       process.exit(1);

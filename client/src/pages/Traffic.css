@@ -1,0 +1,137 @@
+.traffic-page {
+  padding: 48px 0;
+}
+
+.traffic-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+.traffic-header h1 {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.traffic-header code {
+  color: var(--accent);
+  font-size: 13px;
+}
+
+.traffic-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.filter-group {
+  display: flex;
+  gap: 4px;
+}
+
+.traffic-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.traffic-feed {
+  overflow: hidden;
+}
+
+.feed-header-row,
+.feed-row {
+  display: grid;
+  grid-template-columns: 90px 70px 1fr 70px 70px 80px;
+  align-items: center;
+  padding: 10px 16px;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.feed-header-row {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  font-weight: 600;
+  border-bottom: 1px solid var(--border);
+}
+
+.feed-row {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  transition: background 0.15s;
+}
+.feed-row:hover {
+  background: var(--bg-card-hover);
+}
+
+.feed-col-path code {
+  font-size: 12px;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  display: block;
+}
+
+.feed-col-status {
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.feed-col-latency {
+  font-family: var(--font-mono);
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.feed-col-rate {
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.feed-col-time {
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.feed-body {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.feed-empty {
+  padding: 48px;
+  text-align: center;
+}
+
+.no-session {
+  padding: 48px;
+  text-align: center;
+}
+.no-session h2 {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+.no-session .btn {
+  margin-top: 16px;
+}
+
+@media (max-width: 768px) {
+  .traffic-header {
+    flex-direction: column;
+  }
+  .traffic-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .feed-header-row,
+  .feed-row {
+    grid-template-columns: 70px 60px 1fr 60px 60px;
+  }
+  .feed-col-rate { display: none; }
+}
