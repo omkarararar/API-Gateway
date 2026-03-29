@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LightRays from '../components/LightRays';
+import CurvedLoop from '../components/CurvedLoop';
 import './Landing.css';
 
 export default function Landing() {
@@ -16,6 +17,10 @@ export default function Landing() {
 
   return (
     <div className="landing fade-in">
+      <CurvedLoop
+        marqueeText="One gateway to secure, scale, and observe every API. ✦ "
+        interactive={false}
+      />
       <section className="hero" style={{ position: 'relative', overflow: 'hidden' }}>
         <LightRays
           raysOrigin="top-center"
@@ -76,7 +81,7 @@ export default function Landing() {
           <div className="glass-card feature-card" style={{ justifyContent: 'center' }}>
             <div className="feature-icon">📊</div>
             <h3>Prometheus Metrics</h3>
-            <p>Request counts, latency histograms, error rates, and circuit breaker states — all in Prometheus format.</p>
+            <p>Request counts, latency histograms, error rates, and circuit breaker states, all in Prometheus format.</p>
           </div>
         </div>
       </section>
