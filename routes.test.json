@@ -1,0 +1,31 @@
+{
+  "/api/public": {
+    "target": "http://localhost:4000",
+    "middlewares": ["rateLimiter"],
+    "rateLimit": {
+      "points": 100,
+      "duration": 900
+    }
+  },
+  "/api/auth": {
+    "target": "http://localhost:4001",
+    "middlewares": ["rateLimiter"],
+    "rateLimit": {
+      "points": 10,
+      "duration": 60
+    }
+  },
+  "/api/products": {
+    "target": "http://localhost:4002",
+    "middlewares": ["jwt", "rateLimiter"],
+    "rateLimit": {
+      "points": 50,
+      "duration": 3600,
+      "keyBy": "user"
+    }
+  },
+  "/api/flaky": {
+    "target": "http://localhost:4003",
+    "middlewares": ["circuitBreaker"]
+  }
+}

@@ -1,0 +1,23 @@
+.no-session-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 200px); /* Fill most of the screen minus dock/padding */
+  padding: 24px;
+}
+
+.no-session {
+  padding: 48px;
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+
+.no-session h2 {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.no-session p {
+  margin-bottom: 24px;
+}

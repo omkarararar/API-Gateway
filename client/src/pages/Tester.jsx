@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useSession } from '../context/SessionContext';
 import { useNavigate } from 'react-router-dom';
+import NoSession from '../components/NoSession';
 import './Tester.css';
 
 export default function Tester() {
@@ -16,17 +17,7 @@ export default function Tester() {
   const [burstRunning, setBurstRunning] = useState(false);
 
   if (!session) {
-    return (
-      <div className="tester-page container fade-in">
-        <div className="no-session glass-card">
-          <h2>No API Connected</h2>
-          <p className="text-secondary">Connect your API first to start testing.</p>
-          <button className="btn btn-primary" onClick={() => navigate('/connect')}>
-            Connect Your API →
-          </button>
-        </div>
-      </div>
-    );
+    return <NoSession message="Connect your API first to start testing." />;
   }
 
   const proxyBase = `/s/${session.id}`;

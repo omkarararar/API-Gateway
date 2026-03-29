@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import LightRays from '../components/LightRays';
 import './Landing.css';
 
 export default function Landing() {
@@ -15,19 +16,34 @@ export default function Landing() {
 
   return (
     <div className="landing fade-in">
-      <section className="hero">
-        <div className="container">
+      <section className="hero" style={{ position: 'relative', overflow: 'hidden' }}>
+        <LightRays
+          raysOrigin="top-center"
+          raysColor="#ffffff"
+          raysSpeed={1.3}
+          lightSpread={1.7}
+          rayLength={3}
+          followMouse={true}
+          mouseInfluence={0.1}
+          noiseAmount={0}
+          distortion={0}
+          className="custom-rays"
+          pulsating={false}
+          fadeDistance={1}
+          saturation={1}
+        />
+        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
           <div className="hero-badge">
             <span className={`health-dot ${health ? 'live' : ''}`} />
             {health ? 'Gateway Online' : 'Checking...'}
           </div>
           <h1 className="hero-title">
-            Put any API behind a<br />
-            <span className="gradient-text">production-grade gateway</span>
+            Because your API deserves better than<br />
+            <span className="gradient-text">‘it works on my machine.’</span>
           </h1>
           <p className="hero-subtitle">
             Paste your API URL and instantly get rate limiting, circuit breakers,
-            JWT authentication, and Prometheus metrics — no code changes needed.
+            JWT authentication, and Prometheus metrics, no code changes needed.
           </p>
           <div className="hero-actions">
             <button className="btn btn-primary btn-lg" onClick={() => navigate('/connect')}>
@@ -57,7 +73,7 @@ export default function Landing() {
             <h3>JWT Authentication</h3>
             <p>Centralized JWT verification with role-based access control. Generate test tokens from the dashboard.</p>
           </div>
-          <div className="glass-card feature-card">
+          <div className="glass-card feature-card" style={{ justifyContent: 'center' }}>
             <div className="feature-icon">📊</div>
             <h3>Prometheus Metrics</h3>
             <p>Request counts, latency histograms, error rates, and circuit breaker states — all in Prometheus format.</p>
@@ -65,8 +81,8 @@ export default function Landing() {
         </div>
       </section>
 
-      <section className="how-it-works container">
-        <h2 className="section-title" style={{ textAlign: 'center', marginBottom: '32px' }}>How It Works</h2>
+      <section className="how-it-works container" style={{ position: 'relative', zIndex: 10, marginTop: '50px' }}>
+        <h2 className="section-title" style={{ textAlign: 'center', marginBottom: '50px' }}>How It Works</h2>
         <div className="steps-grid">
           <div className="step">
             <div className="step-number">1</div>
