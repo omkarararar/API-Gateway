@@ -7,6 +7,7 @@ import Tester from './pages/Tester';
 import Traffic from './pages/Traffic';
 import Metrics from './pages/Metrics';
 import { SessionProvider } from './context/SessionContext';
+import Particles from './components/Particles';
 
 export default function App() {
   const navigate = useNavigate();
@@ -21,7 +22,20 @@ export default function App() {
 
   return (
     <SessionProvider>
-      <main style={{ flex: 1, paddingBottom: 100 }}>
+      <div style={{ width: '100vw', height: '100vh', position: 'fixed', top: 0, left: 0, zIndex: 0 }}>
+        <Particles
+          particleColors={["#ffffff"]}
+          particleCount={200}
+          particleSpread={10}
+          speed={0.1}
+          particleBaseSize={100}
+          moveParticlesOnHover={true}
+          alphaParticles={false}
+          disableRotation={false}
+          pixelRatio={window.devicePixelRatio || 1}
+        />
+      </div>
+      <main style={{ flex: 1, paddingBottom: 100, position: 'relative', zIndex: 1 }}>
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/connect" element={<Connect />} />
