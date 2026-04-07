@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CurvedLoop from '../components/CurvedLoop';
+import ElectricBorder from '../components/ElectricBorder';
 import './Landing.css';
 
 export default function Landing() {
@@ -47,26 +48,34 @@ export default function Landing() {
 
       <section className="features container">
         <div className="features-grid">
-          <div className="glass-card feature-card">
-            <div className="feature-icon">🛡️</div>
-            <h3>Rate Limiting</h3>
-            <p>Redis-backed sliding window rate limiting per IP. Protects your API from abuse with configurable thresholds.</p>
-          </div>
-          <div className="glass-card feature-card">
-            <div className="feature-icon">⚡</div>
-            <h3>Circuit Breaker</h3>
-            <p>Opossum circuit breaker per upstream. Fails fast when your API is down, auto-recovers when it's back.</p>
-          </div>
-          <div className="glass-card feature-card">
-            <div className="feature-icon">🔐</div>
-            <h3>JWT Authentication</h3>
-            <p>Centralized JWT verification with role-based access control. Generate test tokens from the dashboard.</p>
-          </div>
-          <div className="glass-card feature-card" style={{ justifyContent: 'center' }}>
-            <div className="feature-icon">📊</div>
-            <h3>Prometheus Metrics</h3>
-            <p>Request counts, latency histograms, error rates, and circuit breaker states, all in Prometheus format.</p>
-          </div>
+          <ElectricBorder color="#bc16f8" speed={1} chaos={0.12} borderRadius={16} className="h-full">
+            <div className="glass-card feature-card" style={{ height: '100%', margin: 0 }}>
+              <div className="feature-icon">🛡️</div>
+              <h3>Rate Limiting</h3>
+              <p>Redis-backed sliding window rate limiting per IP. Protects your API from abuse with configurable thresholds.</p>
+            </div>
+          </ElectricBorder>
+          <ElectricBorder color="#5227FF" speed={1} chaos={0.12} borderRadius={16} className="h-full">
+            <div className="glass-card feature-card" style={{ height: '100%', margin: 0 }}>
+              <div className="feature-icon">⚡</div>
+              <h3>Circuit Breaker</h3>
+              <p>Opossum circuit breaker per upstream. Fails fast when your API is down, auto-recovers when it's back.</p>
+            </div>
+          </ElectricBorder>
+          <ElectricBorder color="#27FF8A" speed={1} chaos={0.12} borderRadius={16} className="h-full">
+            <div className="glass-card feature-card" style={{ height: '100%', margin: 0 }}>
+              <div className="feature-icon">🔐</div>
+              <h3>JWT Authentication</h3>
+              <p>Centralized JWT verification with role-based access control. Generate test tokens from the dashboard.</p>
+            </div>
+          </ElectricBorder>
+          <ElectricBorder color="#FF2752" speed={1} chaos={0.12} borderRadius={16} className="h-full">
+            <div className="glass-card feature-card" style={{ height: '100%', margin: 0, justifyContent: 'center' }}>
+              <div className="feature-icon">📊</div>
+              <h3>Prometheus Metrics</h3>
+              <p>Request counts, latency histograms, error rates, and circuit breaker states, all in Prometheus format.</p>
+            </div>
+          </ElectricBorder>
         </div>
       </section>
 
