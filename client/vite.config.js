@@ -7,7 +7,7 @@ export default defineConfig({
     proxy: {
       '/api': 'http://localhost:3000',
       '/health': 'http://localhost:3000',
-      '/s': 'http://localhost:3000',
+      '/s/': 'http://localhost:3000',
       '/metrics': 'http://localhost:3000',
     },
   },
