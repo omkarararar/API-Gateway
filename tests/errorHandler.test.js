@@ -1,8 +1,30 @@
 const request = require('supertest');
+
+// Mock Redis and rate-limiter before app import
+jest.mock('ioredis', () => {
+  return jest.fn().mockImplementation(() => ({
+    on: jest.fn(),
+  }));
+});
+
+jest.mock('rate-limiter-flexible', () => {
+  return {
+    RateLimiterRedis: jest.fn().mockImplementation(function () {
+      this.points = 10000;
+      this.consume = jest.fn().mockResolvedValue({
+        remainingPoints: 9999,
+        msBeforeNext: 2500,
+        consumedPoints: 1,
+        isFirstInDuration: true,
+      });
+    }),
+  };
+});
+
 const app = require('../src/index');
 
 describe('Global Error Handler Middleware', () => {
-  it('should return 404 with JSON/HTML body for unknown routes', async () => {
+  it('should return 404 for unknown routes', async () => {
     const res = await request(app).get('/this-route-does-not-exist');
     expect(res.status).toBe(404);
   });

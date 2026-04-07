@@ -1,6 +1,28 @@
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
 const express = require('express');
+
+// Mock Redis and rate-limiter before app import
+jest.mock('ioredis', () => {
+  return jest.fn().mockImplementation(() => ({
+    on: jest.fn(),
+  }));
+});
+
+jest.mock('rate-limiter-flexible', () => {
+  return {
+    RateLimiterRedis: jest.fn().mockImplementation(function () {
+      this.points = 10000;
+      this.consume = jest.fn().mockResolvedValue({
+        remainingPoints: 9999,
+        msBeforeNext: 2500,
+        consumedPoints: 1,
+        isFirstInDuration: true,
+      });
+    }),
+  };
+});
+
 const app = require('../src/index');
 
 describe('Role-Based Access Control (RBAC)', () => {

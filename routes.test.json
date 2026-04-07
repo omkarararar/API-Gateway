@@ -1,31 +1,22 @@
-{
-  "/api/public": {
+[
+  {
+    "path": "/api/public",
     "target": "http://localhost:4000",
-    "middlewares": ["rateLimiter"],
-    "rateLimit": {
-      "points": 100,
-      "duration": 900
-    }
+    "middlewares": ["publicRateLimiter"]
   },
-  "/api/auth": {
+  {
+    "path": "/api/auth",
     "target": "http://localhost:4001",
-    "middlewares": ["rateLimiter"],
-    "rateLimit": {
-      "points": 10,
-      "duration": 60
-    }
+    "middlewares": ["authRateLimiter"]
   },
-  "/api/products": {
+  {
+    "path": "/api/products",
     "target": "http://localhost:4002",
-    "middlewares": ["jwt", "rateLimiter"],
-    "rateLimit": {
-      "points": 50,
-      "duration": 3600,
-      "keyBy": "user"
-    }
+    "middlewares": ["authenticateJWT", "userRateLimiter"]
   },
-  "/api/flaky": {
+  {
+    "path": "/api/admin",
     "target": "http://localhost:4003",
-    "middlewares": ["circuitBreaker"]
+    "middlewares": ["authenticateJWT", "requireRole:admin", "userRateLimiter"]
   }
-}
+]

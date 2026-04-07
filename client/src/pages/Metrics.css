@@ -63,6 +63,52 @@
   margin-left: 2px;
 }
 
+/* Charts */
+.charts-section {
+  margin-bottom: 32px;
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 12px;
+}
+
+.chart-card {
+  padding: 24px;
+}
+
+.chart-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+}
+
+.chart-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+}
+
+/* Recharts overrides for dark theme */
+.recharts-text {
+  fill: var(--text-secondary) !important;
+}
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: rgba(255, 255, 255, 0.05) !important;
+}
+.recharts-default-tooltip {
+  background: rgba(15, 15, 25, 0.95) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 8px !important;
+}
+
+/* Circuit Breakers */
 .breakers-section {
   margin-bottom: 32px;
 }
@@ -140,6 +186,12 @@
 }
 .no-session .btn {
   margin-top: 16px;
+}
+
+@media (max-width: 900px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 768px) {
