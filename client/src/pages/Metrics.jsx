@@ -80,8 +80,11 @@ export default function Metrics() {
 
   const fetchRawMetrics = async () => {
     try {
-      const res = await fetch('/metrics');
-      if (res.ok) setRawMetrics(await res.text());
+      const res = await fetch('/api/gateway/metrics-json');
+      if (res.ok) {
+        const data = await res.json();
+        setRawMetrics(JSON.stringify(data, null, 2));
+      }
     } catch {
       setRawMetrics('Failed to fetch metrics');
     }
