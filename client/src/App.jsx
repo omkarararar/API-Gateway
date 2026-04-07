@@ -1,5 +1,5 @@
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import { VscHome, VscPlug, VscBeaker, VscListSelection, VscGraph } from 'react-icons/vsc';
+import { PiHouse, PiPlugs, PiFlask, PiListBullets, PiChartLineUp } from 'react-icons/pi';
 import Dock from './components/Dock';
 import Landing from './pages/Landing';
 import Connect from './pages/Connect';
@@ -13,11 +13,11 @@ export default function App() {
   const navigate = useNavigate();
 
   const items = [
-    { icon: <VscHome size={18} />, label: 'Home', onClick: () => navigate('/') },
-    { icon: <VscPlug size={18} />, label: 'Connect', onClick: () => navigate('/connect') },
-    { icon: <VscBeaker size={18} />, label: 'Tester', onClick: () => navigate('/tester') },
-    { icon: <VscListSelection size={18} />, label: 'Traffic', onClick: () => navigate('/traffic') },
-    { icon: <VscGraph size={18} />, label: 'Metrics', onClick: () => navigate('/metrics') },
+    { icon: <PiHouse size={20} />, label: 'Home', onClick: () => navigate('/') },
+    { icon: <PiPlugs size={20} />, label: 'Connect', onClick: () => navigate('/connect') },
+    { icon: <PiFlask size={20} />, label: 'Tester', onClick: () => navigate('/tester') },
+    { icon: <PiListBullets size={20} />, label: 'Traffic', onClick: () => navigate('/traffic') },
+    { icon: <PiChartLineUp size={20} />, label: 'Metrics', onClick: () => navigate('/metrics') },
   ];
 
   return (

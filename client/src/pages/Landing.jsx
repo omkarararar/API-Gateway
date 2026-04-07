@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CurvedLoop from '../components/CurvedLoop';
+import { PiShieldCheck, PiLightning, PiLockKey, PiChartBar } from 'react-icons/pi';
 import ElectricBorder from '../components/ElectricBorder';
 import './Landing.css';
 
@@ -16,91 +16,95 @@ export default function Landing() {
   }, []);
 
   return (
-    <div className="landing fade-in" style={{ position: 'relative' }}>
-      <CurvedLoop
-        marqueeText="One gateway to secure, scale, and observe every API. ✦ "
-        interactive={false}
-      />
-      <section className="hero" style={{ position: 'relative' }}>
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div className="hero-badge">
+    <div className="landing fade-in">
+      
+      <header className="dashboard-header">
+        <div className="system-status">
+          <div className="health-badge">
             <span className={`health-dot ${health ? 'live' : ''}`} />
-            {health ? 'Gateway Online' : 'Checking...'}
+            {health ? 'SYSTEM.ONLINE' : 'SYSTEM.POLLING'}
           </div>
-          <h1 className="hero-title">
-            Because your API deserves better than<br />
-            <span className="gradient-text">‘it works on my machine.’</span>
-          </h1>
-          <p className="hero-subtitle">
-            Paste your API URL and instantly get rate limiting, circuit breakers,
-            JWT authentication, and Prometheus metrics, no code changes needed.
+        </div>
+        <div className="title-section">
+          <h1>API Gateway Interface</h1>
+          <p className="subtitle">
+            A high-performance reverse proxy for production APIs. 
+            Implements Redis-backed rate limiting, Opossum circuit breakers, JWT authentication, and Prometheus metrics without upstream code modifications.
           </p>
-          <div className="hero-actions">
-            <button className="btn btn-primary btn-lg" onClick={() => navigate('/connect')}>
-              Connect Your API →
-            </button>
-            <a href="https://github.com/omkarararar/API-Gateway" target="_blank" rel="noreferrer" className="btn btn-secondary btn-lg">
-              View on GitHub
-            </a>
-          </div>
         </div>
-      </section>
-
-      <section className="features container">
-        <div className="features-grid">
-          <ElectricBorder color="#bc16f8" speed={1} chaos={0.12} borderRadius={16} className="h-full">
-            <div className="glass-card feature-card" style={{ height: '100%', margin: 0 }}>
-              <div className="feature-icon">🛡️</div>
+        <div className="header-actions">
+          <button className="btn btn-primary" onClick={() => navigate('/connect')}>
+            Initialize Connection
+          </button>
+          <a href="https://github.com/omkarararar/API-Gateway" target="_blank" rel="noreferrer" className="btn btn-secondary">
+            View Source
+          </a>
+        </div>
+      </header>
+      <div className="layout-grid">
+        <ElectricBorder color="#bc16f8" borderRadius={2} chaos={0.12} speed={1} className="features-panel">
+          <section className="glass-card" style={{ padding: 0, height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <div className="panel-header">Capabilities</div>
+            <div className="feature-row">
+              <div className="feature-icon-wrapper">
+                <PiShieldCheck size={24} />
+              </div>
               <h3>Rate Limiting</h3>
-              <p>Redis-backed sliding window rate limiting per IP. Protects your API from abuse with configurable thresholds.</p>
+              <p>Redis-backed sliding window rate limiting per IP. Strictly enforces thresholds to protect upstream integrity.</p>
             </div>
-          </ElectricBorder>
-          <ElectricBorder color="#5227FF" speed={1} chaos={0.12} borderRadius={16} className="h-full">
-            <div className="glass-card feature-card" style={{ height: '100%', margin: 0 }}>
-              <div className="feature-icon">⚡</div>
+            <div className="feature-row">
+              <div className="feature-icon-wrapper">
+                <PiLightning size={24} />
+              </div>
               <h3>Circuit Breaker</h3>
-              <p>Opossum circuit breaker per upstream. Fails fast when your API is down, auto-recovers when it's back.</p>
+              <p>Opossum state machine per upstream origin. Shunts traffic during failure states and attempts auto-recovery during half-open ticks.</p>
             </div>
-          </ElectricBorder>
-          <ElectricBorder color="#27FF8A" speed={1} chaos={0.12} borderRadius={16} className="h-full">
-            <div className="glass-card feature-card" style={{ height: '100%', margin: 0 }}>
-              <div className="feature-icon">🔐</div>
-              <h3>JWT Authentication</h3>
-              <p>Centralized JWT verification with role-based access control. Generate test tokens from the dashboard.</p>
+            <div className="feature-row">
+              <div className="feature-icon-wrapper">
+                <PiLockKey size={24} />
+              </div>
+              <h3>JWT Auth</h3>
+              <p>Centralized cryptographic token verification. Drops unauthenticated or malformed requests before upstream propagation.</p>
             </div>
-          </ElectricBorder>
-          <ElectricBorder color="#FF2752" speed={1} chaos={0.12} borderRadius={16} className="h-full">
-            <div className="glass-card feature-card" style={{ height: '100%', margin: 0, justifyContent: 'center' }}>
-              <div className="feature-icon">📊</div>
-              <h3>Prometheus Metrics</h3>
-              <p>Request counts, latency histograms, error rates, and circuit breaker states, all in Prometheus format.</p>
+            <div className="feature-row">
+              <div className="feature-icon-wrapper">
+                <PiChartBar size={24} />
+              </div>
+              <h3>Observability</h3>
+              <p>Emits Prometheus-compatible metrics encompassing request volume, latency profiles, error rates, and circuit topologies.</p>
             </div>
-          </ElectricBorder>
-        </div>
-      </section>
+          </section>
+        </ElectricBorder>
 
-      <section className="how-it-works container" style={{ position: 'relative', zIndex: 10, marginTop: '50px' }}>
-        <h2 className="section-title" style={{ textAlign: 'center', marginBottom: '50px' }}>How It Works</h2>
-        <div className="steps-grid">
-          <div className="step">
-            <div className="step-number">1</div>
-            <h3>Paste Your API URL</h3>
-            <p>Enter any public URL or localhost endpoint</p>
-          </div>
-          <div className="step-arrow">→</div>
-          <div className="step">
-            <div className="step-number">2</div>
-            <h3>Send Requests Through Gateway</h3>
-            <p>Use the proxy URL for all your API calls</p>
-          </div>
-          <div className="step-arrow">→</div>
-          <div className="step">
-            <div className="step-number">3</div>
-            <h3>See Everything Live</h3>
-            <p>Monitor traffic, rates, and breaker states in real time</p>
-          </div>
-        </div>
-      </section>
+        <ElectricBorder color="#bc16f8" borderRadius={2} chaos={0.12} speed={1} className="workflow-panel">
+          <section className="glass-card" style={{ padding: 0, height: '100%', display: 'flex', flexDirection: 'column' }}>
+             <div className="panel-header">Implementation Protocol</div>
+             <div className="steps-list">
+               <div className="step-item">
+                 <span className="step-idx">[1]</span>
+                 <div>
+                   <h4>Register Endpoint</h4>
+                   <p>Define public or localhost target</p>
+                 </div>
+               </div>
+               <div className="step-item">
+                 <span className="step-idx">[2]</span>
+                 <div>
+                   <h4>Reroute Traffic</h4>
+                   <p>Point clients to proxy interface</p>
+                 </div>
+               </div>
+               <div className="step-item">
+                 <span className="step-idx">[3]</span>
+                 <div>
+                   <h4>Monitor Telemetry</h4>
+                   <p>Observe state in real-time</p>
+                 </div>
+               </div>
+             </div>
+          </section>
+        </ElectricBorder>
+      </div>
     </div>
   );
 }
