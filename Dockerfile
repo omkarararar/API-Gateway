@@ -1,19 +1,37 @@
-FROM node:20-alpine
+FROM node:20-alpine AS build
 
-# Create app directory
+# Create build directory
 WORKDIR /usr/src/app
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# Copy root configurations
 COPY package*.json ./
 
-# Install only production dependencies for a leaner image
+# Copy client and server code
+COPY src/ ./src/
+COPY client/ ./client/
+COPY routes*.json ./
+
+# Install root dependencies
+RUN npm ci
+
+# Build the client
+RUN cd client && npm ci && npm run build
+
+# --- Production Image ---
+FROM node:20-alpine
+
+WORKDIR /usr/src/app
+
+# Install production dependencies only
+COPY package*.json ./
 RUN npm ci --omit=dev
 
-# Bundle app source
-COPY . .
+# Copy necessary files from build stage
+COPY --from=build /usr/src/app/src/ ./src/
+COPY --from=build /usr/src/app/client/dist/ ./client/dist/
+COPY --from=build /usr/src/app/routes.json ./
 
-# Bind to the port declared in env
+# Expose port
 EXPOSE 3000
 
 # Start the gateway
