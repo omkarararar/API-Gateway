@@ -7,7 +7,7 @@
     "dev": "nodemon src/index.js",
     "test": "jest --runInBand --forceExit",
     "test:watch": "jest --watch --runInBand",
-    "build": "cd client && npm run build",
+    "build": "npm install --prefix client && npm run build --prefix client",
     "test:coverage": "jest --coverage --runInBand --forceExit"
   },
   "repository": {
